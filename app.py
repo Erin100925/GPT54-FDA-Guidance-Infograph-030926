@@ -112,7 +112,7 @@ with st.sidebar:
     current_step = st.radio("Go to step:", steps, label_visibility="collapsed")
     
     st.markdown("---")
-    MODEL_OPTS =['gpt-4o', 'gpt-4o-mini', 'gemini-1.5-pro', 'gemini-1.5-flash']
+    MODEL_OPTS =['gpt-4o-mini', 'gpt-4.1-mini', 'gemini-3-flash-preview', 'gemini-2.5-flash']
     selected_model = st.selectbox("🧠 Select Brain", MODEL_OPTS)
 
 AGENTS =[
