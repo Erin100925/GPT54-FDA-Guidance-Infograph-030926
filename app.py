@@ -170,4 +170,4 @@ elif current_step == 'Dashboard':
             theme=st.session_state['theme'],
             summary=st.session_state.get('review_md', '-----SUMMARY (fill with dashboard content)-----')
         )
-        st.download_button("Download PDF", data=pdf_bytes, file_name="reguai_dashboard.pdf", mime
+        st.download_button("Download PDF", data=pdf_bytes, file_name="reguai_dashboard.pdf", mime="application/pdf")
