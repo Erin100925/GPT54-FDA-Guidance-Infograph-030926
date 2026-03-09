@@ -18,7 +18,7 @@ DEFAULT_PROMPTS = {
     'fda_letter': "Based on the review context, draft a formal, ready-to-sign FDA Cover Letter for this premarket notification submission."
 }
 
-MODEL_OPTS =['gpt-4o', 'gpt-4o-mini', 'gemini-1.5-pro', 'gemini-1.5-flash', 'claude-3.5-sonnet']
+MODEL_OPTS =['gpt-4.1-mini', 'gpt-4.1-mini-mini', 'gemini-3-flash-preview', 'gemini-2.5-flash', 'claude-3.5-sonnet']
 
 default_states = {
     'language': 'English', 'theme': 'light', 'painter_style': 'Van Gogh', 
@@ -57,7 +57,7 @@ def generate_ai_response(prompt, context, model, api_key):
             import openai
             client = openai.OpenAI(api_key=api_key)
             resp = client.chat.completions.create(
-                model="gpt-4o-mini", # Standardizing to mini for speed if using OpenAI
+                model="gpt-4.1-mini-mini", # Standardizing to mini for speed if using OpenAI
                 messages=[{"role": "user", "content": full_prompt}]
             )
             return resp.choices[0].message.content
