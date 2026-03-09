@@ -1,10 +1,11 @@
 import os
+import io
 import streamlit as st
-from typing import Optional
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 # ---- Helper functions for Env/API key retrieval
-def get_api_key() -> Optional[str]:
-    # Try environment variable
+def get_api_key():
     return os.getenv('OPENAI_API_KEY') or os.getenv('GEMINI_API_KEY')
 
 def display_api_key_widget():
@@ -97,7 +98,6 @@ for ag in AGENTS:
     st.sidebar.markdown(f"**Agent: {ag['label']}**")
     prompt_key = f"prompt_{ag['id']}"
     model_key = f"model_{ag['id']}"
-    # Allow prompt editing per agent
     st.sidebar.text_area(f"Prompt ({ag['label']})", st.session_state.get(prompt_key, f"Default prompt for {ag['label']}."), key=prompt_key)
     st.sidebar.selectbox(f"Model ({ag['label']})", MODEL_OPTS, index=MODEL_OPTS.index(selected_model), key=model_key)
     agent_states[ag['id']] = {
@@ -122,12 +122,10 @@ elif current_step == 'Review':
     if not st.session_state.get('doc_uploaded'):
         st.info("Please upload a file or text on Step 1 first.")
         st.stop()
-    # Placeholder: Use the selected model to reorganize pasted text or file (call to LLM API)
     doc_text = "---AI ORGANIZED DOCUMENT MARKDOWN HERE---"
     doc_text = st.text_area("AI Reorganized Markdown", value=doc_text, height=300, key="review_md")
     st.session_state['review_md'] = doc_text
     if st.button("Generate Dashboard Features"):
-        # Normally here: call each agent to process data and populate dashboard_data
         st.success("Dashboard Data Generated! Switch to Dashboard tab.")
 
 # ---- DASHBOARD (WOW Visualization)
@@ -137,29 +135,39 @@ elif current_step == 'Dashboard':
     for i, ag in enumerate(AGENTS):
         with dashboard_tabs[i]:
             st.write(f"Visual analytics for **{ag['label']}** go here.")
-            # Placeholder: Dashboard plots, tables, progress, agent status, live results, editable outputs, etc.
             st.info("(For full deployment: render advanced Recharts/D3/SVG/HTML visualizations and agent result editing here)")
-
-        # Status indicators for each agent
         st.progress(i / len(AGENTS))
-        st.write("Status: 🔄 Complete  ✅") # In real use, dynamically update based on agent process
-
+        st.write("Status: 🔄 Complete  ✅")
+    
+    # ---- MARKDOWN/HTML Export
     st.download_button("Export as Markdown", "-----MARKDOWN-----", file_name="reguai_dashboard.md", mime="text/markdown")
     st.download_button("Export as HTML", "<html><body>-----HTML-----</body></html>", file_name="reguai_dashboard.html", mime="text/html")
-    st.button("Export as PDF (Print)", on_click=lambda: st.info("Please print this page (Ctrl+P) to save a PDF."))
 
-# ---- AI NOTE KEEPER
-elif current_step == 'AI Note Keeper':
-    st.header("Step 4: AI Note Keeper & Magics ✨")
-    note_input = st.text_area("Paste any clinical/note text (markdown, raw, etc.)")
-    st.markdown("On 'Transform', the text will be converted to a structured AI-organized markdown. Edit result below or enhance with AI Magics!")
-    if st.button("Transform Note"):
-        # Here: Call LLM to transform note, suggest structure, highlight keywords etc.
-        transformed_md = "# Organized Note Title\n\n- Bullet 1\n- Bullet 2\n\n## Summary: ..."
-        st.session_state['notekeeper_md'] = transformed_md
-        st.success("Note transformed using AI.")
-    transformed_md = st.text_area("Editable Structured Note (Markdown)", st.session_state.get('notekeeper_md', ''))
-    st.markdown("Prompt for note transformation is pinned below for context traceability.")
-    note_prompt = st.text_area("Prompt Used", "Organize this clinical text into markdown.", key="notekeeper_prompt")
-
-    colmagics = st.columns(
+    # ---- PDF EXPORT USING REPORTLAB:
+    def create_dashboard_pdf(title:str, painter:str, theme:str, summary:str) -> bytes:
+        buf = io.BytesIO()
+        c = canvas.Canvas(buf, pagesize=letter)
+        width, height = letter
+        c.setFont("Helvetica-Bold", 20)
+        c.drawString(50, height - 50, title)
+        c.setFont("Helvetica", 12)
+        c.drawString(50, height - 80, f"Painter Style: {painter}")
+        c.drawString(50, height - 100, f"Theme: {theme}")
+        c.line(50, height - 110, width - 50, height - 110)
+        text = c.beginText(50, height - 130)
+        text.textLines(summary)
+        c.drawText(text)
+        c.showPage()
+        c.save()
+        pdf = buf.getvalue()
+        buf.close()
+        return pdf
+    
+    if st.button("Export as PDF"):
+        pdf_bytes = create_dashboard_pdf(
+            title="ReguAI WOW Regulatory Report",
+            painter=st.session_state['painter_style'],
+            theme=st.session_state['theme'],
+            summary=st.session_state.get('review_md', '-----SUMMARY (fill with dashboard content)-----')
+        )
+        st.download_button("Download PDF", data=pdf_bytes, file_name="reguai_dashboard.pdf", mime
