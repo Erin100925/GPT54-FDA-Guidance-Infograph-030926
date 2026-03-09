@@ -8,7 +8,7 @@ json5
 jsonrepair
 markdown
 html2text
-svgwrite
+#svgwrite
 Pillow
 pyyaml
 reportlab
