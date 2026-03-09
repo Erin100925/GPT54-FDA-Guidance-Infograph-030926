@@ -75,9 +75,9 @@ else:
 
 # ---- STEP-BASED NAVIGATION
 steps = ['Upload', 'Review', 'Dashboard', 'AI Note Keeper']
-step_idx = st.sidebar.radio("Navigation", steps, horizontal=False)
-current_step = steps[step_idx]
-
+#step_idx = st.sidebar.radio("Navigation", steps, horizontal=False)
+#current_step = steps[step_idx]
+current_step = st.sidebar.radio("Navigation", steps, horizontal=False)
 # ---- MODEL & AGENT CONTROL
 MODEL_OPTS = [
     'gpt-4o-mini', 'gpt-4.1-mini', 'gemini-2.5-flash',
