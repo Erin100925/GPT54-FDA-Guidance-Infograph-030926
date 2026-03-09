@@ -39,21 +39,25 @@ with col2:
     lang = st.selectbox("Language", ['English', '繁體中文'], index=0 if st.session_state['language']=='English' else 1, key="langselect")
     st.session_state['language'] = lang
 with col3:
-    theme = st.selectbox("Theme", ['Light', 'Dark'], key="themeselect")
+    theme = st.selectbox("Theme",['Light', 'Dark'], key="themeselect")
     st.session_state['theme'] = theme.lower()
 with col4:
-    PAINTERS = [
+    PAINTERS =[
         'Van Gogh','Monet','Picasso','Da Vinci','Klimt','Hokusai','Rembrandt','Miro',
         'Dali','Kandinsky','Cezanne','O\'Keeffe','Matisse','Pollock','Goya','Warhol',
         'Basquiat','Mondrian','Magritte','Turner'
     ]
     painter_style = st.selectbox("🎨 Painter Style", PAINTERS, key="paintersel")
     st.session_state['painter_style'] = painter_style
+    
+    # Fix: Updating widget state correctly upon Jackpot trigger
     if st.button("Jackpot! 🎲"):
         import random
         painter_style = random.choice(PAINTERS)
         st.session_state['painter_style'] = painter_style
+        st.session_state['paintersel'] = painter_style  # Update widget key state
         st.success(f"Painter style switched to {painter_style}!")
+        st.rerun()  # Instantly reflect the randomized choice on the screen
 
 st.markdown(f"""
 <style>
@@ -75,15 +79,14 @@ else:
 
 # ---- STEP-BASED NAVIGATION
 steps = ['Upload', 'Review', 'Dashboard', 'AI Note Keeper']
-#step_idx = st.sidebar.radio("Navigation", steps, horizontal=False)
-#current_step = steps[step_idx]
 current_step = st.sidebar.radio("Navigation", steps, horizontal=False)
+
 # ---- MODEL & AGENT CONTROL
-MODEL_OPTS = [
+MODEL_OPTS =[
     'gpt-4o-mini', 'gpt-4.1-mini', 'gemini-2.5-flash',
     'gemini-2.5-flash-lite', 'gemini-3-flash-preview'
 ]
-AGENTS = [
+AGENTS =[
     {'label':'Infographics', 'id':'infographics'},
     {'label':'Checklist', 'id':'checklist'},
     {'label':'Risk Radar', 'id':'risk_radar'},
@@ -98,7 +101,11 @@ for ag in AGENTS:
     st.sidebar.markdown(f"**Agent: {ag['label']}**")
     prompt_key = f"prompt_{ag['id']}"
     model_key = f"model_{ag['id']}"
-    st.sidebar.text_area(f"Prompt ({ag['label']})", st.session_state.get(prompt_key, f"Default prompt for {ag['label']}."), key=prompt_key)
+    
+    if prompt_key not in st.session_state:
+        st.session_state[prompt_key] = f"Default prompt for {ag['label']}."
+        
+    st.sidebar.text_area(f"Prompt ({ag['label']})", key=prompt_key)
     st.sidebar.selectbox(f"Model ({ag['label']})", MODEL_OPTS, index=MODEL_OPTS.index(selected_model), key=model_key)
     agent_states[ag['id']] = {
         'prompt': st.session_state[prompt_key], 'model': st.session_state[model_key]
@@ -122,9 +129,14 @@ elif current_step == 'Review':
     if not st.session_state.get('doc_uploaded'):
         st.info("Please upload a file or text on Step 1 first.")
         st.stop()
-    doc_text = "---AI ORGANIZED DOCUMENT MARKDOWN HERE---"
-    doc_text = st.text_area("AI Reorganized Markdown", value=doc_text, height=300, key="review_md")
-    st.session_state['review_md'] = doc_text
+        
+    # BUG FIX: Initialize text in session state, and allow the widget to use its `key`
+    # parameter intrinsically rather than assigning `st.session_state['review_md'] = doc_text` post-render.
+    if "review_md" not in st.session_state:
+        st.session_state["review_md"] = "---AI ORGANIZED DOCUMENT MARKDOWN HERE---"
+        
+    doc_text = st.text_area("AI Reorganized Markdown", height=300, key="review_md")
+    
     if st.button("Generate Dashboard Features"):
         st.success("Dashboard Data Generated! Switch to Dashboard tab.")
 
