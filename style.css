@@ -1,0 +1,98 @@
+/* Base Styles */
+body {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Neat dark theme */
+.theme-neat-dark {
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+}
+
+/* Simple white theme */
+.theme-simple-white {
+    background-color: #ffffff;
+    color: #333333;
+}
+
+/* Alp. forest theme */
+.theme-alp--forest {
+    background-color: #2f4f4f;
+    color: #f5f5f5;
+}
+
+/* Blue sky theme */
+.theme-blue-sky {
+    background-color: #87ceeb;
+    color: #00008b;
+}
+
+/* Deep ocean theme */
+.theme-deep-ocean {
+    background-color: #000080;
+    color: #add8e6;
+}
+
+/* Magic purple theme */
+.theme-magic-purple {
+    background-color: #4b0082;
+    color: #e6e6fa;
+}
+
+/* Beethoven theme */
+.theme-beethoven {
+    background-color: #363636;
+    color: #dcdcdc;
+}
+
+/* Mozart theme */
+.theme-mozart {
+    background-color: #fffafa;
+    color: #2f4f4f;
+}
+
+/* J.S.Bach theme */
+.theme-j-s-bach {
+    background-color: #d2b48c;
+    color: #556b2f;
+}
+
+/* Chopin theme */
+.theme-chopin {
+    background-color: #f0e68c;
+    color: #8b4513;
+}
+
+/* Ferrari Sportscar theme */
+.theme-ferrari-sportscar {
+    background-color: #ff2800;
+    color: #ffffff;
+}
+
+/* NBA theme */
+.theme-nba {
+    background-color: #1d428a;
+    color: #c8102e;
+}
+
+/* MLB theme */
+.theme-mlb {
+    background-color: #002d72;
+    color: #d50032;
+}
+
+/* NFL styles theme */
+.theme-nfl-styles {
+    background-color: #013369;
+    color: #d50a0a;
+}```
+
+---
+
+### **Follow-up Questions:**
+
+1.  How could this system be extended to handle other file types, such as `.docx`, `.txt`, or even audio and video files?
+2.  What additional pre-processing steps could be added to improve the quality of the text before it is sent to the AI agents (e.g., noise reduction, grammar correction)?
+3.  In what ways could the agentic workflow be made more dynamic, perhaps allowing for branching logic or parallel execution of agents based on the content of the documents?
+4.  How might one implement a feedback loop where the user's edits to an agent's output are used to fine-tune the agent's prompt or parameters for future tasks?
+5.  What are the security and privacy implications of processing sensitive documents with this system, and what measures could be taken to mitigate those risks?
