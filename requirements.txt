@@ -9,3 +9,4 @@ html2text
 pdfkit
 Pillow
 pyyaml
+reportlab
