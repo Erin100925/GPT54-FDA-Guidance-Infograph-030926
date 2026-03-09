@@ -19,7 +19,7 @@ DEFAULT_PROMPTS = {
     'fda_letter': "Based on the review context, draft a formal, ready-to-sign FDA Cover Letter for this premarket notification submission."
 }
 
-MODEL_OPTS =['gpt-4o', 'gpt-4o-mini', 'gemini-1.5-pro', 'gemini-1.5-flash', 'claude-3.5-sonnet']
+MODEL_OPTS =['gpt-4.1-mini', 'gpt-4.1-mini-mini', 'gemini-3-flash-preview', 'gemini-2.5-flash', 'claude-3.5-sonnet']
 
 default_states = {
     'language': 'English', 'theme': 'light', 'painter_style': 'Van Gogh', 
